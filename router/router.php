@@ -110,7 +110,7 @@ class Router {
             }
             call_user_func([$controller, $method]);
 
-        } catch (\Throwable $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             $this->logger->log($e->getMessage(), __FILE__, __LINE__);
             echo "500 - Internal Server Error";

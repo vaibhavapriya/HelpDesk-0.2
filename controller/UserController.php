@@ -250,15 +250,16 @@ class UserController {
 
             if (empty($name) || empty($email) || empty($phone)) {
                 header("Location: /project/profile?error=" . urlencode("All fields are required!"));
+                echo json_encode(['status' => 'error', 'message' => "All fields are required!"]);
                 exit();
             }
 
             $success = $this->userModel->updateProfile($userId, $name, $email, $phone);
 
             if ($success) {
-                header("Location: /project/profile?success=" . urlencode("Profile updated successfully!"));
+                echo json_encode(['status' => 'success', 'message' => "Profile updated successfully!"]);
             } else {
-                header("Location: /project/profile?error=" . urlencode("Error updating profile."));
+                echo json_encode(['status' => 'error', 'message' => "Error updating profile."]);
             }
         }
     }
@@ -271,28 +272,28 @@ class UserController {
             $confirmPassword = trim($_POST["confirm_password"]);
 
             if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
-                header("Location: /project/profile?error=" . urlencode("All fields are required!"));
+                echo json_encode(['status' => 'error', 'message' => "All fields are required!"]);
                 exit();
             }
 
             if ($newPassword !== $confirmPassword) {
-                header("Location: /project/profile?error=" . urlencode("Passwords do not match!"));
+                echo json_encode(['status' => 'error', 'message' => "Passwords do not match!"]);
                 exit();
             }
 
             $hashedPassword = $this->userModel->getPasswordByUserId($userId);
 
             if (!password_verify($oldPassword, $hashedPassword)) {
-                header("Location: /project/profile?error=" . urlencode("Old password is incorrect!"));
+                echo json_encode(['status' => 'error', 'message' => "Old password is incorrect!"]);
                 exit();
             }
 
             $success = $this->userModel->passwordChange($userId, $newPassword);
 
             if ($success) {
-                header("Location: /project/profile?success=" . urlencode("Password changed successfully!"));
+                echo json_encode(['status' => 'success', 'message' => "Password changed successfully!"]);
             } else {
-                header("Location: /project/profile?error=" . urlencode("Error updating password."));
+                echo json_encode(['status' => 'error', 'message' => "Error updating password."]);
             }
         }
     }

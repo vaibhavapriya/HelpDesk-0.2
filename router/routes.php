@@ -25,7 +25,7 @@ $router->add('/resetPassword', HomeController::class, 'resetpassword');
 $router->add('/profile', HomeController::class, 'profile');
 $router->add('/newTicket', HomeController::class, 'submitTicket');
 $router->add('/myTickets', HomeController::class, 'myTickets');
-$router->add('/logout', LogoutController::class, 'logoutController');
+$router->add('/logout', HomeController::class, 'logout');
 
 $router->add('/register/post', UserController::class, 'register');
 $router->add('/login/post', UserController::class, 'login');
@@ -38,7 +38,7 @@ $router->add('/profile/post', UserController::class, 'profileChange', [AuthMiddl
 $router->add('/profile/password/post', UserController::class, 'passwordChange', [ AuthMiddleware::class]);
 $router->add('/clientTicket', HomeController::class, 'clientTicket');
 $router->add('/image', TicketController::class, 'serveAttachment');
-$router->add('/clientTicket/get', TicketController::class, 'clientTicket', [ AuthMiddleware::class, CheckTicket::class]);
+$router->add('/clientTicket/get', TicketController::class, 'clientTicket', [ AuthMiddleware::class]);
 $router->add('/adminhome', HomeController::class, 'adminHome');
 $router->add('/adminTicket', HomeController::class, 'adminTicket');
 $router->add('/adminProfile', HomeController::class, 'adminProfile');

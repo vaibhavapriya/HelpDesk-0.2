@@ -50,4 +50,7 @@ class HomeController {
     public function clientTicket(){
         require __DIR__ . '/../views/clientTicket.view.php';
     }
+    public function logout(){
+        require __DIR__ . '/../views/logout.view.php';
+    }
 }

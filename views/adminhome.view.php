@@ -1,9 +1,16 @@
-<?php 
-require_once __DIR__ . '/components/header.php'; 
-require_once __DIR__ . '/components/sidebar.php';?>
-<main class="d-flex align-items-center justify-content-center ">
-  <div class="container py-5">
-  </div>
-</main>
+<div class="wrapper">
+  <?php require_once 'components/header.php'; ?>
+  <?php require_once 'components/sidebar.php'; ?>
 
-<?php require_once __DIR__ . '/components/footer.php'; ?>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content pt-3">
+      <div class="container-fluid">
+        <!-- Your main content here -->
+         <main></main>
+      </div>
+    </section>
+  </div>
+  <?php require_once __DIR__ . '/components/footer.php'; ?>
+</div>
+

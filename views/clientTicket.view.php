@@ -41,18 +41,8 @@
             </table>
         </div>
 
-        <!-- Attachment Section -->
-        <div class="mb-4">
-            <h3>Attachment:</h3>
-            <?php if (!empty($ticket['attachment'])): ?>
-                <img src="/project/image.php?id=<?= htmlspecialchars($ticket['id']) ?>" alt="Ticket Attachment" class="img-fluid" style="max-width: 400px;">
-            <?php else: ?>
-                <p>No attachment available.</p>
-            <?php endif; ?>
-        </div>
-
         <!-- Back Button -->
-        <a href="/project/myTickets" class="btn btn-secondary">Back to My Tickets</a>
+        <a href="myTickets" class="btn btn-secondary">Back to My Tickets</a>
     </div>
 </main>
 <script>
@@ -81,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const attachmentContainer = document.getElementById('attachmentContainer');
         if (ticket.attachment) {
-          attachmentContainer.innerHTML = `<img src="/image?id=${ticket.id}" class="img-fluid" style="max-width: 400px;">`;
+          attachmentContainer.innerHTML = `<img src="image?id=${ticket.id}" class="img-fluid" style="max-width: 400px;">`;
         } else {
           attachmentContainer.textContent = "No attachment available.";
         }

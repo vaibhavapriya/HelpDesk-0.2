@@ -3,7 +3,7 @@ require_once __DIR__ . '/components/clientheader.php'; ?>
 
   <main class="d-flex align-items-center justify-content-center ">
     <div class="container">
-      <h2 class="mb-4 text-center">Service Desk Knowledge Base</h2>
+      <h2 class="mb-4 mt-4 text-center">Service Desk Knowledge Base</h2>
 
       <div class="accordion" id="faqAccordion">
 

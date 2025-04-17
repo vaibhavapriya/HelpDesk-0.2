@@ -3,11 +3,8 @@
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel nav-item  mt-3 pb-3 mb-3 d-flex">
-      <a href="#" class="nav-link active">
+      <a href="adminhome" class="nav-link active">
         <i class="fas fa-house nav-icon"></i>
-        <p>
-          Home
-        </p>
       </a>
     </div>
 

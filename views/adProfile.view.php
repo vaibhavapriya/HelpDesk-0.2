@@ -1,12 +1,17 @@
-<?php 
-require_once __DIR__ . '/components/header.php'; 
-require_once __DIR__ . '/components/sidebar.php';
-if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
-  header("Location: /HelpDesk2/login?error=" . urlencode("Please log in again."));
-  exit;
-}?>
+<div class="wrapper">
+  <?php require_once 'components/header.php'; ?>
+  <?php require_once 'components/sidebar.php'; 
+  if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
+    header("Location: /HelpDesk2/login?error=" . urlencode("Please log in again."));
+    exit;
+  }?>
 
-<main class="container py-5">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content pt-3">
+      <div class="container-fluid">
+        <!-- Your main content here -->
+        <main class="container py-5">
   <div class="container">
     <h2 class="mb-4">Edit Profile</h2>
 
@@ -212,6 +217,7 @@ document.getElementById('changepassword').addEventListener('submit', async funct
   }
    });
 </script>
-
-<?php require_once __DIR__ . '/components/footer.php'; ?>
-
+      </div>
+    </section>
+  </div>
+  <?php require_once __DIR__ . '/components/footer.php'; ?>

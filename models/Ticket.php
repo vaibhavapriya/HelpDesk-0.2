@@ -72,4 +72,40 @@ class Ticket {
         }
     }
 
+    public function getTicketByIdAndEmail($ticketId, $email) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT id, subject, priority, topic, description, last_replier, status, last_activity, requester, attachment 
+                FROM tickets 
+                WHERE id = :id
+            ");
+    
+            $stmt->bindParam(':id', $ticketId, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if (!$ticket) return null;
+            if ($ticket['requester'] !== $email) return 'unauthorized';
+    
+            return $ticket;
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
+    public function getAttachmentById($ticketId) {
+        try {
+            $query = "SELECT attachment, attachment_type FROM {$this->table} WHERE id = :id LIMIT 1";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $ticketId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
+    
+    
 }

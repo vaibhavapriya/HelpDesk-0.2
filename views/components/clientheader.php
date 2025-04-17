@@ -23,57 +23,55 @@
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid d-flex justify-content-between">
-      <a class="navbar-brand" href="#">Name</a>
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand me-5" href="home">HELPDESK</a>
+
+      <!-- Toggle button for mobile (optional if you want it collapsible) -->
+      <!-- Uncomment below if you want it responsive -->
       
-      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button> -->
-      <ul class="collapse navbar-collapse show justify-content-around navbar-nav " id="navbarNav">
-      <?php 
-         if (!isset($_SESSION['jwt_token'] ) || empty($_SESSION['jwt_token'] )) { ?>
+      </button>
+     
 
-            <li class="nav-item">
-              <a class="nav-link" href="home">HOME</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="newTicket">SUBMIT TICKET</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="knowledgeBase">KNOWLEDGEBASE</a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-primary" href="login">LOGIN</a>
-            </li>
-
-         <?php
-        }else{?>
-            <li class="nav-item">
-              <a class="nav-link" href="home">HOME</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="newTicket">SUBMIT TICKET</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="knowledgeBase">KNOWLEDGEBASE</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="myTickets">MY TICKET</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="profile">MY PROFILE</a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-primary" href="logout">LOGOUT</a>
-            </li>
-        <?php
-        } 
-         ?>
-        
-      </ul>
+      <!-- Menu -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <?php 
+            if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) { ?>
+              <li class="nav-item">
+                <a class="nav-link" href="newTicket">SUBMIT TICKET</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="knowledgeBase">KNOWLEDGEBASE</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary" href="login">LOGIN</a>
+              </li>
+          <?php } else { ?>
+              <li class="nav-item">
+                <a class="nav-link" href="newTicket">SUBMIT TICKET</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="knowledgeBase">KNOWLEDGEBASE</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="myTickets">MY TICKET</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="profile">MY PROFILE</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary" href="logout">LOGOUT</a>
+              </li>
+          <?php } ?>
+        </ul>
+      </div>
     </div>
   </nav>
+
 
   <!-- Optional Bootstrap JS (for toggle button functionality) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>

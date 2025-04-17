@@ -102,9 +102,31 @@ class TicketController{
     }
 
     public function clientTicket(){
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ticket ID.'], 400);
+            return;
+        }
+        $ticketId = intval($_GET['id']);
+        $email = Auth::email();
 
+        if (!$email) {
+            echo json_encode(['status' => 'error', 'message' => 'Unauthorized.'], 401);
+            return;
+        }
+
+        $ticket = $this->ticketModel->getTicketByIdAndEmail($ticketId, $email);
+
+        if ($ticket === false) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to fetch ticket.']);
+        } elseif ($ticket === 'unauthorized') {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied.']);
+        } elseif ($ticket === null) {
+            echo json_encode(['status' => 'error', 'message' => 'Ticket not found.']);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $ticket]);
+        }
     }
-    
+
     public function serveAttachment() {
         if (!isset($_GET['id']) || empty($_GET['id'])) {
             http_response_code(400);

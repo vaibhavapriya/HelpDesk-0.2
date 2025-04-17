@@ -72,7 +72,7 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
     <?php endif; ?>
 
     <!-- Back button -->
-    <a href="/project/myTickets" class="btn btn-outline-primary mt-3">
+    <a href="/myTickets" class="btn btn-outline-primary mt-3">
       <i class="bi bi-arrow-left-circle"></i> Back to My Tickets
     </a>
   </div>
