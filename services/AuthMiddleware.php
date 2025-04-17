@@ -41,7 +41,7 @@ class AuthMiddleware {
         } catch (ExpiredException $e) {
             // Token is expired — redirect to login
             session_destroy(); // optional: clear old session
-            header("Location: /HelpDesk2/login?error=" . urlencode("Session Expired. Please log in again."));
+            echo json_encode(['status' => 'error', 'message' => 'Session expired. Please login again.']);
             exit();
         } catch (Exception $e) {
             header("Location: /HelpDesk2/login?error=" . urlencode("Session Expired"));

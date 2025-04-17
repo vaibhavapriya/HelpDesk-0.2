@@ -42,11 +42,13 @@ $router->add('/clientTicket/get', TicketController::class, 'clientTicket', [ Aut
 $router->add('/adminhome', HomeController::class, 'adminHome');
 $router->add('/adminTicket', HomeController::class, 'adminTicket');
 $router->add('/adminProfile', HomeController::class, 'adminProfile');
+$router->add('/users', HomeController::class, 'users');
 $router->add('/tickets', HomeController::class, 'tickets');
 $router->add('/errorlog', HomeController::class, 'errorpage');
 $router->add('/tickets/get', AdminController::class, 'tickets', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/errorlog/get', AdminController::class, 'errorlogs', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/users/get', AdminController::class, 'requesters', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/userinfo/get', AdminController::class, 'users', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/adminTicket/post', AdminController::class, 'submitTicket', [AuthMiddleware::class, AuthRole::class]);
 
 

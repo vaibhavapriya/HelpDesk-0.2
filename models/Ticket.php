@@ -56,18 +56,39 @@ class Ticket {
             return false;
         }
     }
-    public function getTickets() {
-        try {
-            $query = "SELECT id, subject, requester, last_replier, status, last_activity 
-                      FROM {$this->table} 
-                      ORDER BY last_activity DESC";
 
-            $stmt = $this->db->prepare($query);
-            $stmt->execute();
+    public function getTickets($status = null, $search = null) {
+        try {
+            $sql = "SELECT id, subject, requester, priority, last_replier, status, last_activity 
+                    FROM {$this->table} 
+                    WHERE 1"; // Always true, allows conditional chaining
+
+            $params = [];
+
+            // Status filter (Open, In Progress, Closed)
+            if (!empty($status) && strtolower($status) !== 'all') {
+                $sql .= " AND LOWER(status) = :status";
+                $params[':status'] = strtolower($status);
+            }
+
+            // Search by subject, id, requester name
+            if (!empty($search)) {
+                $sql .= " AND (
+                    LOWER(subject) LIKE :search 
+                    OR CAST(id AS CHAR) LIKE :search
+                    OR LOWER(requester) LIKE :search
+                )";
+                $params[':search'] = '%' . strtolower($search) . '%';
+            }
+
+            $sql .= " ORDER BY last_activity DESC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
             return false;
         }
     }

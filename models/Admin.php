@@ -34,5 +34,21 @@ class Admin {
             return false;
         }
     }
+    public function getUserinfo($search = null) {
+        try {
+            if ($search) {
+                $stmt = $this->db->prepare("SELECT userid, name, role, email, phone FROM user WHERE name LIKE :search OR email LIKE :search OR phone LIKE :search");
+                $stmt->execute(['search' => "%$search%"]);
+            } else {
+                $stmt = $this->db->query("SELECT userid, name, role, email, phone FROM user");
+            }
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        } catch (PDOException $e) {
+            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            return false;
+        }
+    }
+    
 
 }

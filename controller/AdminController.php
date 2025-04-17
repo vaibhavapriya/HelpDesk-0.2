@@ -31,15 +31,12 @@ class AdminController {
         $this->adminModel = new Admin($db);
         $this->logger = new Logger($db);
     }
-    public function tickets(){
-        // if (!isset($_SESSION['email'])) {
-        //     echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
-        //     exit();
-        // }
-
-        $email = Auth::email();
-        $tickets = $this->ticketModel->getTickets();
-
+    public function tickets(){    
+        $status = isset($_GET['status']) ? $_GET['status'] : null;
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+    
+        $tickets = $this->ticketModel->getTickets($status, $search);
+    
         if ($tickets === false) {
             echo json_encode(['status' => 'error', 'message' => 'Something went wrong. Please try again.']);
         } else {
@@ -122,6 +119,18 @@ class AdminController {
             echo json_encode(['status' => 'error', 'message' => ['error' => 'Database error.']]);
         }
 
+        exit();
+    }
+    public function users(){
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+    
+        $users = $this->adminModel->getUserinfo($search);
+    
+        if ($users === false) {
+            echo json_encode(['status' => 'error', 'message' => 'Something went wrong. Please try again.']);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $users]);
+        }
         exit();
     }
 }

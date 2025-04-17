@@ -53,4 +53,7 @@ class HomeController {
     public function logout(){
         require __DIR__ . '/../views/logout.view.php';
     }
+    public function users(){
+        require __DIR__ . '/../views/users.view.php';
+    }
 }
