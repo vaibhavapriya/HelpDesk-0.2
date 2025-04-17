@@ -1,0 +1,58 @@
+# Composer dependencies
+/vendor/
+
+# Composer lock file (optional - include this if you want consistency)
+/composer.lock
+
+# Application logs
+*.log
+*.cache
+
+# Laravel-specific logs (if using Laravel)
+/storage/*.key
+/storage/app/public/*
+/storage/framework/*
+/storage/logs/*
+
+# Symfony (if applicable)
+/var/
+
+# dotenv environment files
+.env
+.env.*
+
+# Node (optional if you're using npm/yarn/webpack with Laravel Mix etc.)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE/editor junk
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Coverage/Test reports
+/coverage/
+.phpunit.result.cache
+/.phpunit.cache/
+
+# Cache files
+.cache/
+*.gz
+
+# Ignore built files (if using frontend tooling)
+public/css/
+public/js/
+public/mix-manifest.json
+/public/build/
+
+# Other generated files
+bootstrap/cache/*.php

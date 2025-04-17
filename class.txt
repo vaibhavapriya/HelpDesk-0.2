@@ -1,0 +1,120 @@
+Layer	Classes
+Core	Controller, Model, Router, Auth, Mailer
+Models	User, Ticket, Answer
+Controllers	AuthController, TicketController, AnswerController
+Helpers	Validator, Response
+
+$router = new Router();
+
+$router->post('/api/register', 'AuthController@register');
+$router->post('/api/login', 'AuthController@login');
+$router->get('/api/me', 'AuthController@me');
+
+$router->post('/api/tickets', 'TicketController@submit');
+$router->get('/api/tickets', 'TicketController@list');
+$router->get('/api/tickets/{id}', 'TicketController@view');
+
+$router->post('/api/tickets/{id}/answer', 'AnswerController@answer');
+
+$router->resolve();
+
+
+Controller
+namespace App\Controllers;
+
+use App\Database\DB;
+
+class ResetPasswordController {
+    public function showPostForm() {
+        require __DIR__ . '/../../views/resetpassword.view.php';
+    }
+
+    public function storePost() {
+        $conn = DB::getConnection(); // static method to fetch DB connection
+
+        // Your logic from storePost() goes here, with $conn instead of global
+    }
+}
+
+routes
+namespace App\Core;
+
+class Router {
+    protected $routes = [];
+
+    public function add($uri, $controller, $method, $middleware = []) {
+        $this->routes[$uri] = compact('controller', 'method', 'middleware');
+    }
+
+    public function dispatch($uri) {
+        if (!isset($this->routes[$uri])) {
+            http_response_code(404);
+            exit("404 Not Found");
+        }
+
+        $route = $this->routes[$uri];
+        foreach ($route['middleware'] as $middlewareClass) {
+            (new $middlewareClass)->handle();
+        }
+
+        $controller = new $route['controller'];
+        call_user_func([$controller, $route['method']]);
+    }
+}
+
+
+In public/index.php:
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Core\Router;
+use App\Controllers\ResetPasswordController;
+use App\Middleware\AuthMiddleware;
+
+session_start();
+
+$router = new Router();
+
+$router->add('/resetPassword', ResetPasswordController::class, 'showPostForm');
+$router->add('/resetPassword/post', ResetPasswordController::class, 'storePost', [
+    AuthMiddleware::class
+]);
+
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$router->dispatch($uri);
+
+
+front end
+
+fetch('/resetPassword/post', {
+  method: 'POST',
+  headers: {
+  },
+  body: 
+});
+
+use app\controller\HomeController;
+if (class_exists(\app\controller\HomeController::class)) {
+    echo "✅ HomeController loaded successfully<br>";
+} else {
+    echo "❌ HomeController NOT loaded<br>";
+}
+
+    <!-- Success & Error Alerts -->
+    <?php if (isset($_GET['error'])): ?>
+      <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+          <use xlink:href="#exclamation-triangle-fill" />
+        </svg>
+        <div><?= htmlspecialchars($_GET['error']) ?></div>
+      </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['success'])): ?>
+      <div class="alert alert-success d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+          <use xlink:href="#check-circle-fill" />
+        </svg>
+        <div><?= htmlspecialchars($_GET['success']) ?></div>
+      </div>
+    <?php endif; ?>
