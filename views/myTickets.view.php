@@ -1,6 +1,6 @@
 <?php require_once __DIR__ . '/components/clientheader.php';
 if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
-  header("Location: /HelpDesk2/login?error=" . urlencode("Please log in again."));
+  header("Location: /HelpDesk-0.2/login?error=" . urlencode("Please log in again."));
   exit;
 }?>
 

@@ -26,7 +26,7 @@ class AuthMiddleware {
         $headers = $this->getBearerToken();
 
         if (!$headers) {
-            header("Location: /HelpDesk2/login?error=" . urlencode("Authorization token is missing!"));
+            header("Location: /HelpDesk-0.2/login?error=" . urlencode("Authorization token is missing!"));
             exit();
         }
 
@@ -44,7 +44,7 @@ class AuthMiddleware {
             echo json_encode(['status' => 'error', 'message' => 'Session expired. Please login again.']);
             exit();
         } catch (Exception $e) {
-            header("Location: /HelpDesk2/login?error=" . urlencode("Session Expired"));
+            header("Location: /HelpDesk-0.2/login?error=" . urlencode("Session Expired"));
             $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
             exit();
         }

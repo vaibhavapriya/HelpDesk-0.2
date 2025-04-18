@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HelpDesk</title>
-  <link rel="stylesheet" href="/HelpDesk2/views/assets/style.css"/>
+  <link rel="stylesheet" href="/HelpDesk-0.2/views/assets/style.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
   <link
       rel="stylesheet"

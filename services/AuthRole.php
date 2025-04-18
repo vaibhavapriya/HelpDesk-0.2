@@ -23,7 +23,7 @@ class AuthRole {
             $role = $decoded->role ?? null;
 
             if ($role !== 'admin') {
-                header("Location: /HelpDesk2/home?error=" . urlencode("You have no access!"));
+                header("Location: /HelpDesk-0.2/home?error=" . urlencode("You have no access!"));
                 exit();
             }
 

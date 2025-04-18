@@ -155,7 +155,7 @@ class UserController {
         }
 
         // Compose email
-        $reset_link = "http://localhost/HelpDesk2/resetPassword?token=" . $token;
+        $reset_link = "http://localhost/HelpDesk-0.2/resetPassword?token=" . $token;
         $subject = "Password Reset Request";
         $message = "Click the link to reset your password:\n\n$reset_link\n\nThis link is valid for 3 hours.";
 

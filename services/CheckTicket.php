@@ -26,7 +26,7 @@ class CheckTicket {
 
         if (!$ticket || $ticket['requester_id'] != $requester_id) {
             http_response_code(403);
-            header("Location: /project/myTickets?error=Access Denied");
+            header("Location: /HelpDesk-0.2/myTickets?error=Access Denied");
             die(json_encode(["error" => "Access Denied"]));
         }
     }

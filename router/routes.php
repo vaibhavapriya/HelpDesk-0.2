@@ -12,7 +12,7 @@ use app\services\AuthMiddleware;
 use app\services\AuthRole;
 use app\services\CheckTicket;
 
-$router = new Router('/HelpDesk2');
+$router = new Router('/HelpDesk-0.2');
 
 // Sample route
 $router->add('/', HomeController::class, 'home');
