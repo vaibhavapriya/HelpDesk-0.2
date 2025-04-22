@@ -37,23 +37,32 @@ class Ticket {
         }
     }
 
-    public function getTicketsByEmail($email) {
+    public function getTicketsByEmail($email, $status = null) {
         try {
-            $query = "SELECT id, subject, requester, last_replier, status, last_activity 
-                      FROM {$this->table} 
-                      WHERE requester = :email 
-                      ORDER BY last_activity DESC";
-
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-
+            $sql = "SELECT id, subject, requester, last_replier, status, last_activity 
+                    FROM {$this->table} 
+                    WHERE requester = :email";
+            
+            $params = [':email' => $email];
+    
+            // Add status filter if not 'all' or empty
+            if (!empty($status) && strtolower($status) !== 'all') {
+                $sql .= " AND LOWER(status) = :status";
+                $params[':status'] = strtolower($status);
+            }
+    
+            $sql .= " ORDER BY last_activity DESC";
+    
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
             return false;
         }
     }
+    
 
     public function getTickets($status = null, $search = null) {
         try {

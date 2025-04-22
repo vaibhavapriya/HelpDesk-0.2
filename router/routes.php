@@ -8,6 +8,7 @@ use app\controller\HomeController;
 use app\controller\UserController;
 use app\controller\TicketController;
 use app\controller\AdminController;
+use app\controller\MailController;
 use app\services\AuthMiddleware;
 use app\services\AuthRole;
 use app\services\CheckTicket;
@@ -36,6 +37,7 @@ $router->add('/tickets', HomeController::class, 'tickets');
 $router->add('/errorlog', HomeController::class, 'errorpage');
 $router->add('/replyTicket', HomeController::class, 'replyTicket');
 $router->add('/editUser', HomeController::class, 'editUser');
+$router->add('/mail', HomeController::class, 'mailerconfig');
 
 $router->add('/register/post', UserController::class, 'register');
 $router->add('/login/post', UserController::class, 'login');
@@ -65,6 +67,10 @@ $router->add('/replyTicket/get', AdminController::class, 'ticket', [AuthMiddlewa
 $router->add('/editUser/post', AdminController::class, 'editUser', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/deleteUser/post', AdminController::class, 'deleteUser', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/deleteTicket/post', TicketController::class, 'deleteTicket', [AuthMiddleware::class]);
+$router->add('/mc/get', MailController::class, 'fetchMailConfigs', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/mc/delete', MailController::class, 'deleteMailConfig', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/mc/post', MailController::class, 'addMailConfig', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/mc/activate', MailController::class, 'activateEmail', [AuthMiddleware::class, AuthRole::class]);
 
 
 

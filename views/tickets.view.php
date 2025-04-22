@@ -66,30 +66,7 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 </main>
 
 <script>
-  async function deleteTicket(id) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
 
-    try {
-      const response = await fetch(`deleteTicket/post?id=${id}`, {
-        method: 'POST', // Or 'POST' if your backend requires
-        headers: {
-          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
-        }
-      });
-
-      const result = await response.json();
-
-      if (result.status === 'success') {
-        document.getElementById('status').textContent = 'User deleted successfully.';
-        fetchTickets(); // Refresh the table
-      } else {
-        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
-      }
-    } catch (error) {
-      console.error(error);
-      document.getElementById('status').textContent = 'Server error. Please try again.';
-    }
-  }
   function getStatusBadge(status) {
       switch (status.toLowerCase()) {
         case 'open': return 'primary';
@@ -108,7 +85,7 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
         default: return 'secondary';
       }
   }     
-  async function fetchTickets(search,status) {
+  async function fetchTickets(search="",status="all") {
     const urlParams = new URLSearchParams(window.location.search); // Get query parameters
     const currentStatus = urlParams.get('status') || status;  // Get 'status' from the URL (or use passed 'status')
 
@@ -178,6 +155,30 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
   function statusview(status){
       document.getElementById('statusFilter').value = status;
       fetchTickets("",status);
+  }
+  async function deleteTicket(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const response = await fetch(`deleteTicket/post?id=${id}`, {
+        method: 'POST', // Or 'POST' if your backend requires
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        document.getElementById('status').textContent = 'User deleted successfully.';
+        fetchTickets(); // Refresh the table
+      } else {
+        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
   }
   document.getElementById('searchInput').onchange
   document.addEventListener('DOMContentLoaded', function () {

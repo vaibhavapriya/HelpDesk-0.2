@@ -35,7 +35,6 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             <th scope="col">Last Activity</th>
             <th></th>
             <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody id="ticketTableBody">
@@ -110,14 +109,11 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             row.style.cursor = 'pointer';
 
             row.innerHTML = `
-              <td>${ticket.id}</td>
-              <td>${ticket.subject}</td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">${ticket.id}</td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">${ticket.subject}</td>
               <td><span class="badge bg-${getStatusBadge(ticket.status)}">${ticket.status}</span></td>
               <td>${ticket.last_replier ?? '-'}</td>
               <td>${ticket.last_activity}</td>
-              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">
-                <i class="fa-solid fa-eye"></i>
-              </td>
               <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/editTicket?id=${ticket.id}')">
                 <i class="fa-solid fa-pen-to-square"></i>
               </td>

@@ -54,7 +54,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="home" class="nav-link active">
+          <a href="mail" class="nav-link active">
           <i class="fas fa-envelope nav-icon"></i>
             <p>
               Mail
