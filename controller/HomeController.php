@@ -68,4 +68,7 @@ class HomeController {
     public function userprofile(){
         require __DIR__ . '/../views/userProfile.view.php';
     }
+    public function mailerconfig(){
+        require __DIR__ . '/../views/mailer.view.php';
+    }
 }

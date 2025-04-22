@@ -53,6 +53,14 @@
             </p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="home" class="nav-link active">
+          <i class="fas fa-envelope nav-icon"></i>
+            <p>
+              Mail
+            </p>
+          </a>
+        </li>
         <li class="nav-item menu-open">
           <a href="#" class="nav-link active">
             <i class="nav-icon fas fa-tachometer-alt"></i>

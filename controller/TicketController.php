@@ -4,7 +4,7 @@ namespace app\controller;
 require_once __DIR__ . '/../models/Ticket.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ .'/../services/Logger.php';
-require_once __DIR__ .'/../services/Mailer.php';
+require_once __DIR__ .'/../services/Emailhandler.php';
 require_once __DIR__ .'/../services/Auth.php';
 use Ticket;
 use Firebase\JWT\JWT;
@@ -12,11 +12,13 @@ use Firebase\JWT\Key;
 use app\services\Logger;
 use app\services\Mailer;
 use app\services\Auth;
+use app\services\Emailhandler;
 
 class TicketController{
     private $db;
     private $ticketModel;
     private $logger;
+    private $emailHandler;
 
     public function __construct($db) {
         $this->db = $db;
@@ -67,14 +69,13 @@ class TicketController{
         }
         
         // $logs = json_encode([]);
-    
+        $emailHandler = new EmailHandler($this->db);
         // Save ticket to database
         if ($this->ticketModel->create($requester_id, $requester, $subject, $priority, $topic, $description, $attachment, $attachmentType)) {
             // Send confirmation mail
             $message = "<p>Thank you for your interest, <b>$requester</b>. We have received your ticket:</p><blockquote>$subject</blockquote><p>We will contact you soon.</p>";
             $subjectMail = "Ticket Received - We will contact you soon!";
-
-            Mailer::send($requester, $subjectMail, $message);
+            $emailHandler->sendEmail($requester, $subjectMail, $message);
 
             echo json_encode(['status' => 'success', 'message' => 'Ticket submitted successfully!']);
         } else {

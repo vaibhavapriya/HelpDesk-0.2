@@ -8,6 +8,20 @@ use Dotenv\Dotenv;
 require_once __DIR__ . '/../vendor/autoload.php'; // Load PHPMailer & Dotenv
 
 class Mailer {
+        // Function to dynamically select the "From" email based on subject or other factors
+        public function setSenderEmail($subject)
+        {
+            // Example conditions based on the subject
+            if (strpos($subject, 'Sales') !== false) {
+                $this->companyEmail = 'sales@company.com';
+            } elseif (strpos($subject, 'Support') !== false) {
+                $this->companyEmail = 'support@company.com';
+            } elseif (strpos($subject, 'HR') !== false) {
+                $this->companyEmail = 'hr@company.com';
+            } else {
+                $this->companyEmail = 'info@company.com'; // Default email
+            }
+        }
     public static function send($toEmail, $subject, $message) {
         // Load environment variables
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
