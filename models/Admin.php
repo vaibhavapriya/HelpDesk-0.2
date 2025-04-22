@@ -74,5 +74,19 @@ class Admin {
             return false;
         }
     }
+    public function getUser($userid){
+        
+        try {
+            $query ="SELECT name, email, phone, role FROM user WHERE email = ? ";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userid]);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            return false;
+        }
+    }
+    
 
 }

@@ -109,10 +109,17 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
       }
   }     
   async function fetchTickets(search,status) {
-      const query = new URLSearchParams({
-        status,
-        search
-      }).toString();
+    const urlParams = new URLSearchParams(window.location.search); // Get query parameters
+    const currentStatus = urlParams.get('status') || status;  // Get 'status' from the URL (or use passed 'status')
+
+    const query = new URLSearchParams({
+      status: currentStatus,
+      search
+    }).toString();
+      // const query = new URLSearchParams({
+      //   status,
+      //   search
+      // }).toString();
       try {
         loadingIndicator.style.display = 'block';
         const response = await fetch(`tickets/get?${query}`, {
@@ -141,10 +148,10 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
               row.innerHTML = `
                 <td>${ticket.id}</td>
                 <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">${ticket.subject}</td>
-                <td>${ticket.requester}</td>
+                <td onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${ticket.requester}')">${ticket.requester}</td>
                 <td><span class="badge bg-${getPriorityBadge(ticket.priority)}">${ticket.priority}</span></td>
                 <td><span class="badge bg-${getStatusBadge(ticket.status)}" onclick="statusview('${ticket.status}')">${ticket.status}</span></td>
-                <td>${ticket.last_replier ?? '-'}</td>
+                <td onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${ticket.last_replier ?? '-'}')">${ticket.last_replier ?? '-'}</td>
                 <td>${ticket.last_activity}</td>
                 <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">
                   <i class="fa-solid fa-pen-to-square"></i>

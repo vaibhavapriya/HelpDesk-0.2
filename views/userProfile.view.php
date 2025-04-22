@@ -19,7 +19,7 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             <h5 class="my-3">name</h5>
             <p class="text-muted mb-1">role</p>
             <p class="text-muted mb-4">email</p>
-            <i class="far fa-edit mb-5"></i>
+            <!-- <i class="far fa-edit mb-5"></i> -->
             <!-- <div class="d-flex justify-content-center mb-2">
               <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Follow</button>
               <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">Message</button>
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchUser() {
     try {
-      const response = await fetch(`replyTicket/get?id=${userid}`, {
+      const response = await fetch(`userprofile/get?id=${userid}`, {
         headers: {
           'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
         }
@@ -97,12 +97,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json();
 
       if (result.status === 'success') {
-        const user = result.data;
-        }
-        else {
-          attachmentContainer.innerHTML = `<img src="/project/image.php?id=${ticketId}" 
-            alt="Ticket Attachment" style="max-width: 400px; height: auto;">`;
-        }
+        const user = result.data[0]; // assuming it's an array with one user object
+
+        // Set values into the DOM
+        document.querySelector('h5.my-3').innerText = user.name || 'N/A';
+        document.querySelector('p.text-muted.mb-1').innerText = user.role || 'N/A'; // assuming "role" exists
+        document.querySelector('p.text-muted.mb-4').innerText = user.email || 'N/A';
+
+        const infoRows = document.querySelectorAll('.card-body .row');
+        infoRows[0].querySelector('.col-sm-9 p').innerText = user.name || 'N/A';      // Full Name
+        infoRows[1].querySelector('.col-sm-9 p').innerText = user.email || 'N/A';     // Email
+        infoRows[2].querySelector('.col-sm-9 p').innerText = user.phone || 'N/A';     // Phone
+        infoRows[3].querySelector('.col-sm-9 p').innerText = user.mobile || 'N/A';    // Mobile
+        infoRows[4].querySelector('.col-sm-9 p').innerText = user.address || 'N/A';   // Address
+
+
 
       } else {
         alert(result.message || "Failed to load ticket.");
@@ -114,52 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error submitting form:', error);
     }
   }
-
-  const form = document.getElementById('ticketForm');
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      // ✅ Enable all disabled fields temporarily
-      const selects = form.querySelectorAll('select:disabled');
-      selects.forEach(select => select.disabled = false);
-
-      // Clear previous messages
-      document.getElementById('error').innerHTML = '';
-      document.getElementById('success').innerHTML = '';
-
-      const formData = new FormData(this);
-      formData.append('id', ticketId);
-
-      // ✅ Restore original disabled state
-      selects.forEach(select => select.disabled = true);
-
-      const submitButton = form.querySelector('button[type="submit"]');
-      submitButton.disabled = true;
-
-      try {
-        const response = await fetch(`replyTicket/post`, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
-          }
-        });
-
-        const result = await response.json();
-        const msgBox = document.getElementById(result.status === 'success' ? 'success' : 'error');
-        if (msgBox) {
-          msgBox.textContent = result.message;
-          msgBox.className = `alert ${result.status === 'success' ? 'alert-success' : 'alert-danger'} alert-dismissible fade show`;
-        }
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById('error').innerText = "Failed to submit the reply.";
-      } 
-    });
-  }
-
   fetchUser();
 });
 </script>

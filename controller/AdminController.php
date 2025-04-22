@@ -266,4 +266,17 @@ class AdminController {
 
         exit();
     }
+    public function userprofile(){
+        $userid = $_GET['id'];
+        $user = $this->adminModel->getUser($userid);
+        if ($user === false) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to fetch user.']);
+        } elseif ($user === 'unauthorized') {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied.']);
+        } elseif ($user === null) {
+            echo json_encode(['status' => 'error', 'message' => 'user not found.']);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $user]);
+        }
+    }
 }

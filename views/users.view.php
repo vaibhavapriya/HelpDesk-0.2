@@ -89,9 +89,9 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 
               row.innerHTML = `
                 <td>${user.userid}</td>
-                <td><span class="editable" data-field="name" onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${user.userid}')">${user.name}</span></td>
+                <td><span class="editable" data-field="name" onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${user.email}')">${user.name}</span></td>
                 <td><span class="editable" data-field="role">${user.role}</span></td>
-                <td><span class="editable" data-field="email">${user.email}</span></td>
+                <td><span class="editable" data-field="email" onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${user.email}')">${user.email}</span></td>
                 <td><span class="editable" data-field="phone">${user.phone}</span></td>
                 <td><i class="fa-solid fa-pen-to-square edit-icon" onclick="enableEditing(this, ${user.userid})"></i></td>
                 <td><i class="fa-solid fa-trash text-danger" onclick="deleteUser(${user.userid})"></i></td>

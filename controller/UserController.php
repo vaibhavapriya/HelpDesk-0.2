@@ -63,6 +63,7 @@ class UserController {
 
                 $_SESSION['jwt_token'] = $jwt;
                 $_SESSION['role']= $user['role'];
+                $_SESSION['email']= $user['email'];
 
                 echo json_encode(['status' => 'success', 'message' => $jwt,'role' => $user['role']]);
                 exit;
