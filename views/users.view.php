@@ -43,6 +43,8 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             <th>Role</th>
             <th>Email</th>
             <th>Phone no</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="ticketTableBody">
@@ -87,10 +89,12 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 
               row.innerHTML = `
                 <td>${user.userid}</td>
-                <td>${user.name}</td>
-                <td>${user.role}</td>
-                <td>${user.email}</td>
-                <td>${user.phone}</td>
+                <td><span class="editable" data-field="name" onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${user.userid}')">${user.name}</span></td>
+                <td><span class="editable" data-field="role">${user.role}</span></td>
+                <td><span class="editable" data-field="email">${user.email}</span></td>
+                <td><span class="editable" data-field="phone">${user.phone}</span></td>
+                <td><i class="fa-solid fa-pen-to-square edit-icon" onclick="enableEditing(this, ${user.userid})"></i></td>
+                <td><i class="fa-solid fa-trash text-danger" onclick="deleteUser(${user.userid})"></i></td>
               `;
 
               tableBody.appendChild(row);
@@ -110,6 +114,109 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
     fetchUsers();
     searchInput.addEventListener('input', fetchUsers);
   });
+
+  function enableEditing(icon, userid) {
+    const row = icon.closest('tr');
+    const fields = row.querySelectorAll('.editable');
+
+    fields.forEach(cell => {
+      const field = cell.getAttribute('data-field');
+      const value = cell.textContent;
+
+      let inputEl;
+
+      if (field === 'role') {
+        inputEl = document.createElement('select');
+        ['admin', 'agent', 'client'].forEach(role => {
+          const option = document.createElement('option');
+          option.value = role;
+          option.text = role.charAt(0).toUpperCase() + role.slice(1);
+          if (role === value.toLowerCase()) option.selected = true;
+          inputEl.appendChild(option);
+        });
+      } else {
+        inputEl = document.createElement('input');
+        inputEl.type = 'text';
+        inputEl.value = value;
+      }
+
+      inputEl.classList.add('form-control', 'form-control-sm');
+      inputEl.setAttribute('name', field);
+      cell.innerHTML = '';
+      cell.appendChild(inputEl);
+    });
+
+    // Replace edit icon with save icon
+    icon.classList.remove('fa-pen-to-square');
+    icon.classList.add('fa-floppy-disk');
+    icon.onclick = () => saveRow(row, userid);
+  }
+  async function saveRow(row, userid) {
+    const inputs = row.querySelectorAll('input, select');
+    const updatedData = { userid };
+
+    inputs.forEach(input => {
+      updatedData[input.name] = input.value;
+    });
+
+    try {
+      const response = await fetch('editUser/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        },
+        body: JSON.stringify(updatedData)
+      });
+
+      const result = await response.json();
+      document.getElementById('status').textContent = result.message;
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
+
+    // Replace inputs with plain text
+    inputs.forEach(input => {
+      const span = document.createElement('span');
+      span.classList.add('editable');
+      span.setAttribute('data-field', input.name);
+      span.textContent = input.value;
+      input.parentNode.replaceWith(span);
+    });
+
+    // Replace save icon with edit icon
+    const saveIcon = row.querySelector('.fa-floppy-disk');
+    saveIcon.classList.remove('fa-floppy-disk');
+    saveIcon.classList.add('fa-pen-to-square');
+    saveIcon.onclick = () => enableEditing(saveIcon, userid);
+  }
+  async function deleteUser(userid) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const response = await fetch(`deleteUser/post?id=${userid}`, {
+        method: 'DELETE', // Or 'POST' if your backend requires
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        document.getElementById('status').textContent = 'User deleted successfully.';
+        fetchUsers(); // Refresh the table
+      } else {
+        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
+  }
+
 </script>
 
 <?php require_once __DIR__ . '/components/footer.php'; ?>

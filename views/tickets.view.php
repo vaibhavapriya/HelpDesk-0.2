@@ -52,6 +52,8 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             <th>Status</th>
             <th>Last Replier</th>
             <th>Last Activity</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="ticketTableBody">
@@ -64,9 +66,31 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 </main>
 
 <script>
+  async function deleteTicket(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    function getStatusBadge(status) {
+    try {
+      const response = await fetch(`deleteTicket/post?id=${id}`, {
+        method: 'POST', // Or 'POST' if your backend requires
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        document.getElementById('status').textContent = 'User deleted successfully.';
+        fetchTickets(); // Refresh the table
+      } else {
+        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
+  }
+  function getStatusBadge(status) {
       switch (status.toLowerCase()) {
         case 'open': return 'primary';
         case 'in progress': return 'warning';
@@ -83,16 +107,14 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
         case 'low': return 'success';
         default: return 'secondary';
       }
-    }
-
-    async function fetchTickets() {
-      const search = document.getElementById('searchInput').value;
-      const status = document.getElementById('statusFilter').value;
+  }     
+  async function fetchTickets(search,status) {
       const query = new URLSearchParams({
         status,
         search
       }).toString();
       try {
+        loadingIndicator.style.display = 'block';
         const response = await fetch(`tickets/get?${query}`, {
           method: 'GET',
           headers: {
@@ -118,12 +140,16 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 
               row.innerHTML = `
                 <td>${ticket.id}</td>
-                <td>${ticket.subject}</td>
+                <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">${ticket.subject}</td>
                 <td>${ticket.requester}</td>
                 <td><span class="badge bg-${getPriorityBadge(ticket.priority)}">${ticket.priority}</span></td>
-                <td><span class="badge bg-${getStatusBadge(ticket.status)}">${ticket.status}</span></td>
+                <td><span class="badge bg-${getStatusBadge(ticket.status)}" onclick="statusview('${ticket.status}')">${ticket.status}</span></td>
                 <td>${ticket.last_replier ?? '-'}</td>
                 <td>${ticket.last_activity}</td>
+                <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </td>
+                <td  style="cursor: pointer;" onclick="deleteTicket(${ticket.id})"><i class="fa-solid fa-trash"></i></td>
               `;
 
               tableBody.appendChild(row);
@@ -137,13 +163,35 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
       } catch (error) {
         console.error(error);
         document.getElementById('status').textContent = 'Server error. Please try again.';
+      } finally {
+        // Hide loader
+        loadingIndicator.style.display = 'none';
       }
-    }
+  }
+  function statusview(status){
+      document.getElementById('statusFilter').value = status;
+      fetchTickets("",status);
+  }
+  document.getElementById('searchInput').onchange
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
 
-    fetchTickets();
-    searchInput.addEventListener('input', fetchTickets);
-    statusFilter.addEventListener('change', fetchTickets);
+    // Initial fetch
+    fetchTickets(searchInput.value, statusFilter.value);
+
+    // On search input
+    searchInput.addEventListener('input', () => {
+      fetchTickets(searchInput.value, statusFilter.value);
+    });
+
+    // On status filter change
+    statusFilter.addEventListener('change', () => {
+      fetchTickets(searchInput.value, statusFilter.value);
+    });
   });
+
+
 </script>
 
 <?php require_once __DIR__ . '/components/footer.php'; ?>

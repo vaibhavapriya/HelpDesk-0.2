@@ -24,6 +24,7 @@ class UserController {
         $this->userModel = new User($db);
         $this->logger = new Logger($db);
     }
+    
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['email']);

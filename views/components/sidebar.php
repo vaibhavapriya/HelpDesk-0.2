@@ -45,6 +45,14 @@
             </p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="home" class="nav-link active">
+          <i class="fas fa-display nav-icon"></i>
+            <p>
+              User Portal
+            </p>
+          </a>
+        </li>
         <li class="nav-item menu-open">
           <a href="#" class="nav-link active">
             <i class="nav-icon fas fa-tachometer-alt"></i>

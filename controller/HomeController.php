@@ -56,4 +56,16 @@ class HomeController {
     public function users(){
         require __DIR__ . '/../views/users.view.php';
     }
+    public function editUser(){
+        require __DIR__ . '/../views/editUser.view.php';
+    }
+    public function editTicket(){
+        require __DIR__ . '/../views/editTicket.view.php';
+    }
+    public function replyTicket(){
+        require __DIR__ . '/../views/replyTicket.view.php';
+    }
+    public function userprofile(){
+        require __DIR__ . '/../views/userProfile.view.php';
+    }
 }

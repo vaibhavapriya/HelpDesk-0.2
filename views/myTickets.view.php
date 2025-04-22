@@ -33,6 +33,9 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
             <th scope="col">Status</th>
             <th scope="col">Last Replier</th>
             <th scope="col">Last Activity</th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="ticketTableBody">
@@ -47,6 +50,30 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 </main>
 
 <script>
+  async function deleteTicket(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const response = await fetch(`deleteTicket/post?id=${id}`, {
+        method: 'POST', // Or 'POST' if your backend requires
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        document.getElementById('status').textContent = 'User deleted successfully.';
+        fetchTickets(); // Refresh the table
+      } else {
+        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
+  }
   function getStatusBadge(status) {
     switch (status.toLowerCase()) {
       case 'open': return 'primary';
@@ -81,7 +108,6 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
           tickets.forEach(ticket => {
             const row = document.createElement('tr');
             row.style.cursor = 'pointer';
-            row.onclick = () => window.location.href = `/HelpDesk2/clientTicket?id=${ticket.id}`;
 
             row.innerHTML = `
               <td>${ticket.id}</td>
@@ -89,6 +115,13 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
               <td><span class="badge bg-${getStatusBadge(ticket.status)}">${ticket.status}</span></td>
               <td>${ticket.last_replier ?? '-'}</td>
               <td>${ticket.last_activity}</td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">
+                <i class="fa-solid fa-eye"></i>
+              </td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/editTicket?id=${ticket.id}')">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </td>
+              <td style="cursor: pointer;" onclick="deleteTicket(${ticket.id})"><i class="fa-solid fa-trash"></i></td>
             `;
 
             tableBody.appendChild(row);
@@ -106,6 +139,9 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
   }
 
   fetchMyTickets();
+  function deleteTicket($x){
+    
+  }
 </script>
 
 

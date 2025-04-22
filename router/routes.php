@@ -37,19 +37,32 @@ $router->add('/profile/get', UserController::class, 'profile', [AuthMiddleware::
 $router->add('/profile/post', UserController::class, 'profileChange', [AuthMiddleware::class]);
 $router->add('/profile/password/post', UserController::class, 'passwordChange', [ AuthMiddleware::class]);
 $router->add('/clientTicket', HomeController::class, 'clientTicket');
+$router->add('/editTicket', HomeController::class, 'editTicket');
 $router->add('/image', TicketController::class, 'serveAttachment');
 $router->add('/clientTicket/get', TicketController::class, 'clientTicket', [ AuthMiddleware::class]);
+$router->add('/editTicket/get', TicketController::class, 'ticket', [ AuthMiddleware::class]);
+$router->add('/editTicket/post', TicketController::class, 'editTicket', [ AuthMiddleware::class]);
 $router->add('/adminhome', HomeController::class, 'adminHome');
 $router->add('/adminTicket', HomeController::class, 'adminTicket');
 $router->add('/adminProfile', HomeController::class, 'adminProfile');
+$router->add('/userprofile', HomeController::class, 'userprofle');
 $router->add('/users', HomeController::class, 'users');
 $router->add('/tickets', HomeController::class, 'tickets');
 $router->add('/errorlog', HomeController::class, 'errorpage');
+$router->add('/replyTicket', HomeController::class, 'replyTicket');
+$router->add('/editUser', HomeController::class, 'editUser');
 $router->add('/tickets/get', AdminController::class, 'tickets', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/errorlog/get', AdminController::class, 'errorlogs', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/users/get', AdminController::class, 'requesters', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/userinfo/get', AdminController::class, 'users', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/userprofile/get', AdminController::class, 'userprofle', [AuthMiddleware::class, AuthRole::class]);
 $router->add('/adminTicket/post', AdminController::class, 'submitTicket', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/replyTicket/post', AdminController::class, 'replyTicket', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/editUser/get', AdminController::class, 'user', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/replyTicket/get', AdminController::class, 'ticket', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/editUser/post', AdminController::class, 'editUser', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/deleteUser/post', AdminController::class, 'deleteUser', [AuthMiddleware::class, AuthRole::class]);
+$router->add('/deleteTicket/post', TicketController::class, 'deleteTicket', [AuthMiddleware::class]);
 
 
 

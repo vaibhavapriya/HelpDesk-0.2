@@ -49,6 +49,30 @@ class Admin {
             return false;
         }
     }
-    
+    public function updateUser($userid, $name, $role, $email, $phone) {
+        try {
+            $query = "UPDATE user SET name = :name, role = :role, email = :email, phone = :phone WHERE userid = :userid";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([
+                'name' => $name,
+                'role' => $role,
+                'email' => $email,
+                'phone' => $phone,
+                'userid' => $userid
+            ]);
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
+    public function deleteUser($userid) {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM user WHERE userid = ?");
+            return $stmt->execute([$userid]);
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
 
 }

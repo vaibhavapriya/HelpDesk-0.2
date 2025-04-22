@@ -24,6 +24,7 @@ class AuthRole {
 
             if ($role !== 'admin') {
                 header("Location: /HelpDesk-0.2/home?error=" . urlencode("You have no access!"));
+                echo "Unauthorized: No token provided";
                 exit();
             }
 
