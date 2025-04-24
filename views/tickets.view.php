@@ -156,10 +156,6 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
   const statusFilter = document.getElementById('statusFilter');
   statusFilter.value = status;
 
-  // Trigger the change event explicitly after updating the value
-  const event = new Event('change');
-  statusFilter.dispatchEvent(event);
-
   // Fetch tickets after updating the value
   fetchTickets("", status);
 }
