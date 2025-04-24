@@ -17,7 +17,7 @@ class JWTMiddleware {
         $headers = $this->getBearerToken();
 
         if (!$headers) {
-            header("Location: /project/login?error=" . urlencode("Authorization token is missing!"));
+            header("Location: /HelpDesk-0.2/login?error=" . urlencode("Authorization token is missing!"));
             exit();
         }
 
@@ -31,7 +31,7 @@ class JWTMiddleware {
             $role = $decoded->role;
 
         } catch (Exception $e) {
-            header("Location: /project/login?error=" . urlencode("Invalid token. Please log in again."));
+            header("Location: /HelpDesk-0.2/login?error=" . urlencode("Invalid token. Please log in again."));
             exit();
         }
     }

@@ -37,30 +37,29 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item menu-open">
-          <a href="#" class="nav-link active">
+        <li class="nav-item">
+          <a href="users" class="nav-link active">
             <i class="fas fa-user nav-icon"></i>
             <p>
               User
-              <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="adminProfile" class="nav-link">
-                <!-- <i class="far fa-circle nav-icon"></i> -->
-                <i class="fas fa-address-book nav-icon"></i>
-                <p>profile</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="adminProfile" class="nav-link">
-                <!-- <i class="far fa-shield-halved nav-icon"></i> -->
-                <i class="fa-solid fa-shield-halved nav-icon"></i>
-                <p>password</p>
-              </a>
-            </li>
-          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="home" class="nav-link active">
+          <i class="fas fa-display nav-icon"></i>
+            <p>
+              User Portal
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="mail" class="nav-link active">
+          <i class="fas fa-envelope nav-icon"></i>
+            <p>
+              Mail
+            </p>
+          </a>
         </li>
         <li class="nav-item menu-open">
           <a href="#" class="nav-link active">

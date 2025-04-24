@@ -1,5 +1,6 @@
 RewriteEngine On
-RewriteBase /HelpDesk2/
+RewriteBase /HelpDesk-0.2/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
 RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]

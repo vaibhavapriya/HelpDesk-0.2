@@ -3,6 +3,7 @@ require_once __DIR__ . '/../controller/HomeController.php';
 require_once __DIR__ . '/../controller/UserController.php'; 
 require_once __DIR__ . '/../controller/TicketController.php'; 
 require_once __DIR__ . '/../controller/AdminController.php';
+require_once __DIR__ . '/../controller/MailController.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../services/AuthMiddleware.php';
 require_once __DIR__ . '/../services/AuthRole.php';
@@ -14,6 +15,7 @@ use app\controller\HomeController;
 use app\controller\UserController;
 use app\controller\TicketController;
 use app\controller\AdminController;
+use app\controller\MailController;
 use app\services\AuthMiddleware;
 use app\services\AuthRole;
 use app\services\CheckTicket;
@@ -33,34 +35,42 @@ class Router {
     }
 
     public function add(string $path, string $controllerClass, string $method, array $middleware = []): void {
-        $this->routes[$path] = [
+        $normalizedPath = rtrim($path, '/');
+        if ($normalizedPath === '') $normalizedPath = '/';
+        $this->routes[$normalizedPath] = [
             'controller' => $controllerClass,
             'method' => $method,
             'middleware' => $middleware
         ];
     }
 
-    private function removeBasePath(string $path): string
-    {
-        if (strpos($path, $this->basePath) === 0) {
-            $path = substr($path, strlen($this->basePath));
+    private function removeBasePath(string $path): string {
+        $normalizedBasePath = '/' . trim($this->basePath, '/');
+        $normalizedPath = '/' . ltrim($path, '/');
+
+        if (strpos($normalizedPath, $normalizedBasePath) === 0) {
+            $normalizedPath = substr($normalizedPath, strlen($normalizedBasePath));
         }
-        return $path ?: '/';
+
+        $normalizedPath = rtrim($normalizedPath, '/');
+        return $normalizedPath ?: '/';
     }
 
     public function dispatch(string $uri, string $httpMethod): void {
-
         try {
             $path = parse_url($uri, PHP_URL_PATH);
             $path = $this->removeBasePath($path);
-        
+
             if (!array_key_exists($path, $this->routes)) {
                 http_response_code(404);
                 echo "404 - Page Not Found<br>";
                 echo "PATH: $path<br>";
-                $msg = "404 - Route not found for path: $path";
+                echo "Normalized Path: " . $normalizedPath . "<br>";
+                echo "Normalized Base Path: " . $normalizedBasePath . "<br>";
+                $msg = "404 - Route not found for path: " . $path . " Normalized Path: " . $normalizedPath . " Normalized Base Path: " . $normalizedBasePath;
+
                 $this->logger->log($msg, __FILE__, __LINE__);
-                return;
+                exit;
             }
         
             $route = $this->routes[$path];

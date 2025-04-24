@@ -6,6 +6,7 @@ require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ .'/../services/Logger.php';
 require_once __DIR__ .'/../services/Mailer.php';
 require_once __DIR__ .'/../services/Auth.php';
+require_once __DIR__ .'/../services/Emailhandler.php';
 
 use User;
 use Firebase\JWT\JWT;
@@ -13,6 +14,7 @@ use Firebase\JWT\Key;
 use app\services\Logger;
 use app\services\Mailer;
 use app\services\Auth;
+use app\services\Emailhandler;
 
 class UserController {
     private $db;
@@ -24,6 +26,7 @@ class UserController {
         $this->userModel = new User($db);
         $this->logger = new Logger($db);
     }
+    
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['email']);
@@ -62,6 +65,7 @@ class UserController {
 
                 $_SESSION['jwt_token'] = $jwt;
                 $_SESSION['role']= $user['role'];
+                $_SESSION['email']= $user['email'];
 
                 echo json_encode(['status' => 'success', 'message' => $jwt,'role' => $user['role']]);
                 exit;
@@ -153,13 +157,12 @@ class UserController {
             echo json_encode(['status' => 'error', 'message' => $errors]);
             exit();
         }
-
+        $emailHandler = new EmailHandler($this->db);
         // Compose email
-        $reset_link = "http://localhost/HelpDesk2/resetPassword?token=" . $token;
+        $reset_link = "http://localhost/HelpDesk-0.2/resetPassword?token=" . $token;
         $subject = "Password Reset Request";
         $message = "Click the link to reset your password:\n\n$reset_link\n\nThis link is valid for 3 hours.";
-
-        if (Mailer::send($email, $subject, $message)) {
+        if ($emailHandler->sendEmail($email, $subject,  $message)) {
             echo json_encode(['status' => 'success', 'message' => "Password reset link sent! Check your email."]);
         } else {
             echo json_encode(['status' => 'error', 'message' => ['error' => "Failed to send email. Try again later."]]);

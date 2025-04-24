@@ -1,6 +1,6 @@
 <?php require_once __DIR__ . '/components/clientheader.php';
 if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
-  header("Location: /HelpDesk2/login?error=" . urlencode("Please log in again."));
+  header("Location: /HelpDesk-0.2/login?error=" . urlencode("Please log in again."));
   exit;
 }?>
 
@@ -24,86 +24,121 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
     <h2 class="mb-4">My Tickets</h2>
 
     <div id="status" class="mb-3 text-muted"></div>
-<!-- 
     <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle" id="ticketTable" style="display: none;">
+      <table class="table table-striped table-hover align-middle" id="ticketTable">
         <thead class="table-dark">
           <tr>
             <th scope="col">Ticket ID</th>
             <th scope="col">Subject</th>
-            <th scope="col">Requester</th>
             <th scope="col">Status</th>
             <th scope="col">Last Replier</th>
             <th scope="col">Last Activity</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="ticketTableBody">
+          <!-- JS will populate rows here -->
         </tbody>
       </table>
-    </div> -->
-    <div id="ticketCardContainer" class="row gy-4">
-      <!-- Cards will be dynamically inserted here -->
     </div>
+
+    <!-- <div id="ticketCardContainer" class="row gy-4">
+    </div> -->
   </div>
 </main>
 
 <script>
-async function fetchMyTickets() {
-  try {
-    const response = await fetch('myTickets/get', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
-      }
-    });
+  async function deleteTicket(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
 
-    const result = await response.json();
+    try {
+      const response = await fetch(`deleteTicket/post?id=${id}`, {
+        method: 'POST', // Or 'POST' if your backend requires
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
 
-    const statusDiv = document.getElementById('status');
-    const cardContainer = document.getElementById('ticketCardContainer');
-    cardContainer.innerHTML = ''; // Clear previous cards
+      const result = await response.json();
 
-    if (result.status === 'success') {
-      const tickets = result.data;
-
-      if (tickets.length === 0) {
-        statusDiv.textContent = "No tickets found.";
+      if (result.status === 'success') {
+        document.getElementById('status').textContent = 'User deleted successfully.';
+        fetchTickets(); // Refresh the table
       } else {
-        tickets.forEach(ticket => {
-          const card = document.createElement('div');
-          card.className = 'col-md-6 col-lg-4';
-
-          card.innerHTML = `
-            <div class="card h-100 shadow-sm border-0 hover-shadow bg-light" style="cursor: pointer;" onclick="window.location.href='/HelpDesk2/clientTicket?id=${ticket.id}'">
-              <div class="card-body">
-                <h5 class="card-title">${ticket.subject}</h5>
-                <p class="card-text">
-                  <strong>Ticket ID:</strong> ${ticket.id}<br>
-                  <strong>Status:</strong> ${ticket.status}<br>
-                  <strong>Last Replier:</strong> ${ticket.last_replier ?? '-'}<br>
-                  <strong>Last Activity:</strong> ${ticket.last_activity}
-                </p>
-              </div>
-            </div>
-          `;
-
-          cardContainer.appendChild(card);
-        });
+        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
       }
-    } else {
-      statusDiv.className = 'text-danger';
-      statusDiv.textContent = result.message || 'Something went wrong.';
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
     }
-
-  } catch (error) {
-    console.error(error);
-    document.getElementById('status').textContent = 'Server error. Please try again.';
   }
-}
+  function getStatusBadge(status) {
+    switch (status.toLowerCase()) {
+      case 'open': return 'primary';
+      case 'in progress': return 'warning';
+      case 'closed': return 'success';
+      case 'pending': return 'secondary';
+      default: return 'dark';
+    }
+  }
 
+  async function fetchMyTickets() {
+    try {
+      const response = await fetch('myTickets/get', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
 
-  // Call the function on load
+      const result = await response.json();
+
+      const statusDiv = document.getElementById('status');
+      const tableBody = document.getElementById('ticketTableBody');
+      tableBody.innerHTML = '';
+
+      if (result.status === 'success') {
+        const tickets = result.data;
+
+        if (tickets.length === 0) {
+          statusDiv.textContent = "No tickets found.";
+        } else {
+          tickets.forEach(ticket => {
+            const row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+
+            row.innerHTML = `
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">${ticket.id}</td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/clientTicket?id=${ticket.id}')">${ticket.subject}</td>
+              <td><span class="badge bg-${getStatusBadge(ticket.status)}">${ticket.status}</span></td>
+              <td>${ticket.last_replier ?? '-'}</td>
+              <td>${ticket.last_activity}</td>
+              <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/editTicket?id=${ticket.id}')">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </td>
+              <td style="cursor: pointer;" onclick="deleteTicket(${ticket.id})"><i class="fa-solid fa-trash"></i></td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+        }
+      } else {
+        statusDiv.className = 'text-danger';
+        statusDiv.textContent = result.message || 'Something went wrong.';
+      }
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    }
+  }
+
   fetchMyTickets();
+  function deleteTicket($x){
+    
+  }
 </script>
+
 
 <?php require_once __DIR__ . '/components/footer.php'; ?>

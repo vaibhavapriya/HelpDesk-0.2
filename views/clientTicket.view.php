@@ -29,6 +29,7 @@
             <tr><th>Description</th><td id="description"></td></tr>
             <tr><th>Last Replier</th><td id="lastReplier"></td></tr>
             <tr><th>Status</th><td id="status"></td></tr>
+            <tr><th>Reply</th><td id="reply"></td></tr>
             <tr><th>Last Activity</th><td id="lastActivity"></td></tr>
             </tbody>
 
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchTicket() {
     try {
+      loadingIndicator.style.display = 'block';
       const response = await fetch(`clientTicket/get?id=${ticketId}`, {
         headers: {
           'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
@@ -67,13 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('description').innerHTML = ticket.description.replace(/\n/g, '<br>');
         document.getElementById('lastReplier').textContent = ticket.last_replier ?? 'N/A';
         document.getElementById('status').textContent = ticket.status;
+        document.getElementById('reply').textContent = ticket.reply;
         document.getElementById('lastActivity').textContent = ticket.last_activity;
 
         const attachmentContainer = document.getElementById('attachmentContainer');
-        if (ticket.attachment) {
-          attachmentContainer.innerHTML = `<img src="image?id=${ticket.id}" class="img-fluid" style="max-width: 400px;">`;
-        } else {
+        if (!ticket.attachment_type) {
           attachmentContainer.textContent = "No attachment available.";
+        }
+        else {
+          attachmentContainer.innerHTML = `<img src="/project/image.php?id=${ticketId}" 
+            alt="Ticket Attachment" style="max-width: 400px; height: auto;">`;
         }
 
       } else {
@@ -83,7 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error(err);
       alert("Error fetching ticket details.");
-    }
+    }finally {
+        // Hide loader
+        loadingIndicator.style.display = 'none';
+      }
   }
 
   fetchTicket();

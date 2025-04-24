@@ -91,9 +91,9 @@ require_once __DIR__ . '/components/clientheader.php'; ?>
       successEl.textContent ="Logged in sucessfully";
       localStorage.setItem("jwt_token", result.message);
       if (result.role === 'admin') {
-        window.location.href = '/HelpDesk2/adminhome?message=' + encodeURIComponent("Welcome");
+        window.location.href = '/HelpDesk-0.2/adminhome?message=' + encodeURIComponent("Welcome");
       } else {
-        window.location.href = '/HelpDesk2/home?message=' + encodeURIComponent("Logged in successfully");
+        window.location.href = '/HelpDesk-0.2/home?message=' + encodeURIComponent("Logged in successfully");
       }
 
     } else {

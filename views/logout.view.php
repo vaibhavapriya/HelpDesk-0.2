@@ -13,6 +13,6 @@ if (isset($_COOKIE['jwt_token'])) {
 }
 
 // Redirect to login or home page
-header("Location: /HelpDesk2/login"); // or "home" or wherever you want
+header("Location: /HelpDesk-0.2/login"); // or "home" or wherever you want
 exit();
 ?>

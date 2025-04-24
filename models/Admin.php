@@ -34,5 +34,59 @@ class Admin {
             return false;
         }
     }
+    public function getUserinfo($search = null) {
+        try {
+            if ($search) {
+                $stmt = $this->db->prepare("SELECT userid, name, role, email, phone FROM user WHERE name LIKE :search OR email LIKE :search OR phone LIKE :search");
+                $stmt->execute(['search' => "%$search%"]);
+            } else {
+                $stmt = $this->db->query("SELECT userid, name, role, email, phone FROM user");
+            }
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        } catch (PDOException $e) {
+            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            return false;
+        }
+    }
+    public function updateUser($userid, $name, $role, $email, $phone) {
+        try {
+            $query = "UPDATE user SET name = :name, role = :role, email = :email, phone = :phone WHERE userid = :userid";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([
+                'name' => $name,
+                'role' => $role,
+                'email' => $email,
+                'phone' => $phone,
+                'userid' => $userid
+            ]);
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
+    public function deleteUser($userid) {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM user WHERE userid = ?");
+            return $stmt->execute([$userid]);
+        } catch (PDOException $e) {
+            $this->logger->log($e->getMessage(), __FILE__, __LINE__);
+            return false;
+        }
+    }
+    public function getUser($userid){
+        
+        try {
+            $query ="SELECT name, email, phone, role FROM user WHERE email = ? ";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userid]);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->log( $e->getMessage(),__FILE__,__LINE__);
+            return false;
+        }
+    }
+    
 
 }
