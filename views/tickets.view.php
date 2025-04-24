@@ -30,8 +30,8 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
       <div class="col-md-3">
         <select id="statusFilter" class="form-select">
           <option value="all">All Statuses</option>
-          <option value="open">Open</option>
-          <option value="closed">Closed</option>
+          <option value="Open">Open</option>
+          <option value="Closed">Closed</option>
         </select>
       </div>
     </div>
@@ -66,144 +66,144 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
 </main>
 
 <script>
+  const BASE_URL = "/HelpDesk-0.2";
+  const loadingIndicator = document.getElementById("loadingIndicator"); // Define if used
+
+  // HTML escape helper to prevent XSS
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, match => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[match]));
+  }
 
   function getStatusBadge(status) {
-      switch (status.toLowerCase()) {
-        case 'open': return 'primary';
-        case 'in progress': return 'warning';
-        case 'closed': return 'success';
-        case 'pending': return 'secondary';
-        default: return 'dark';
-      }
+    switch (status.toLowerCase()) {
+      case 'open': return 'primary';
+      case 'in progress': return 'warning';
+      case 'closed': return 'success';
+      case 'pending': return 'secondary';
+      default: return 'dark';
     }
-
-    function getPriorityBadge(priority) {
-      switch (priority.toLowerCase()) {
-        case 'high': return 'danger';
-        case 'medium': return 'warning';
-        case 'low': return 'success';
-        default: return 'secondary';
-      }
-  }     
-  async function fetchTickets(search="",status="all") {
-    const urlParams = new URLSearchParams(window.location.search); // Get query parameters
-    const currentStatus = urlParams.get('status') || status;  // Get 'status' from the URL (or use passed 'status')
-
-    const query = new URLSearchParams({
-      status: currentStatus,
-      search
-    }).toString();
-      // const query = new URLSearchParams({
-      //   status,
-      //   search
-      // }).toString();
-      try {
-        loadingIndicator.style.display = 'block';
-        const response = await fetch(`tickets/get?${query}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
-          }
-        });
-
-        const result = await response.json();
-        const statusDiv = document.getElementById('status');
-        const tableBody = document.getElementById('ticketTableBody');
-        tableBody.innerHTML = '';
-        statusDiv.textContent = '';
-        if (result.status === 'success') {
-          const tickets = result.data;
-
-          if (tickets.length === 0) {
-            statusDiv.textContent = "No tickets found.";
-          } else {
-            tickets.forEach(ticket => {
-              const row = document.createElement('tr');
-              row.style.cursor = 'pointer';
-              // row.onclick = () => window.location.href = `/HelpDesk2/clientTicket?id=${ticket.id}`;
-
-              row.innerHTML = `
-                <td>${ticket.id}</td>
-                <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">${ticket.subject}</td>
-                <td onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${ticket.requester}')">${ticket.requester}</td>
-                <td><span class="badge bg-${getPriorityBadge(ticket.priority)}">${ticket.priority}</span></td>
-                <td><span class="badge bg-${getStatusBadge(ticket.status)}" onclick="statusview('${ticket.status}')">${ticket.status}</span></td>
-                <td onclick="showLoadingAndRedirect('/HelpDesk-0.2/userprofile?id=${ticket.last_replier ?? '-'}')">${ticket.last_replier ?? '-'}</td>
-                <td>${ticket.last_activity}</td>
-                <td style="cursor: pointer;" onclick="showLoadingAndRedirect('/HelpDesk-0.2/replyTicket?id=${ticket.id}')">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </td>
-                <td  style="cursor: pointer;" onclick="deleteTicket(${ticket.id})"><i class="fa-solid fa-trash"></i></td>
-              `;
-
-              tableBody.appendChild(row);
-            });
-          }
-        } else {
-          statusDiv.className = 'text-danger';
-          statusDiv.textContent = result.message || 'Something went wrong.';
-        }
-
-      } catch (error) {
-        console.error(error);
-        document.getElementById('status').textContent = 'Server error. Please try again.';
-      } finally {
-        // Hide loader
-        loadingIndicator.style.display = 'none';
-      }
   }
-  function statusview(status) {
-  const statusFilter = document.getElementById('statusFilter');
-  statusFilter.value = status;
 
-  // Fetch tickets after updating the value
-  fetchTickets("", status);
-}
+  function getPriorityBadge(priority) {
+    switch (priority.toLowerCase()) {
+      case 'high': return 'danger';
+      case 'medium': return 'warning';
+      case 'low': return 'success';
+      default: return 'secondary';
+    }
+  }
 
-  async function deleteTicket(id) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+  async function fetchTickets(search = "", status = "all") {
+    const query = new URLSearchParams({ status, search }).toString();
+    const statusFilter = document.getElementById('statusFilter');
+    statusFilter.value = status;
+
+    if (loadingIndicator) loadingIndicator.style.display = 'block';
 
     try {
-      const response = await fetch(`deleteTicket/post?id=${id}`, {
-        method: 'POST', // Or 'POST' if your backend requires
+      const response = await fetch(`tickets/get?${query}`, {
+        method: 'GET',
         headers: {
           'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
         }
       });
 
       const result = await response.json();
+      const statusDiv = document.getElementById('status');
+      const tableBody = document.getElementById('ticketTableBody');
+
+      tableBody.innerHTML = '';
+      statusDiv.textContent = '';
+      statusDiv.className = 'mb-3 text-muted';
 
       if (result.status === 'success') {
-        document.getElementById('status').textContent = 'User deleted successfully.';
-        fetchTickets(); // Refresh the table
+        const tickets = result.data;
+
+        if (!tickets.length) {
+          statusDiv.textContent = "No tickets found.";
+        } else {
+          tickets.forEach(ticket => {
+            const row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+
+            row.innerHTML = `
+              <td>${ticket.id}</td>
+              <td onclick="showLoadingAndRedirect('${BASE_URL}/replyTicket?id=${ticket.id}')">${escapeHTML(ticket.subject)}</td>
+              <td onclick="showLoadingAndRedirect('${BASE_URL}/userprofile?id=${ticket.requester}')">${escapeHTML(ticket.requester)}</td>
+              <td><span class="badge bg-${getPriorityBadge(ticket.priority)}">${escapeHTML(ticket.priority)}</span></td>
+              <td><span class="badge bg-${getStatusBadge(ticket.status)}" onclick="statusview('${ticket.status}')">${escapeHTML(ticket.status)}</span></td>
+              <td onclick="showLoadingAndRedirect('${BASE_URL}/userprofile?id=${ticket.last_replier ?? '-'}')">${ticket.last_replier ?? '-'}</td>
+              <td>${ticket.last_activity}</td>
+              <td onclick="showLoadingAndRedirect('${BASE_URL}/replyTicket?id=${ticket.id}')"><i class="fa-solid fa-pen-to-square"></i></td>
+              <td onclick="deleteTicket(${ticket.id})"><i class="fa-solid fa-trash"></i></td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+        }
       } else {
-        document.getElementById('status').textContent = result.message || 'Failed to delete user.';
+        statusDiv.className = 'text-danger';
+        statusDiv.textContent = result.message || 'Something went wrong.';
       }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('status').textContent = 'Server error. Please try again.';
+    } finally {
+      if (loadingIndicator) loadingIndicator.style.display = 'none';
+    }
+  }
+
+  function statusview(status) {
+    fetchTickets(document.getElementById('searchInput').value, status);
+  }
+
+  async function deleteTicket(id) {
+    if (!confirm("Are you sure you want to delete this ticket?")) return;
+
+    try {
+      const response = await fetch(`deleteTicket/post?id=${id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?>'
+        }
+      });
+
+      const result = await response.json();
+      document.getElementById('status').textContent =
+        result.status === 'success' ? 'Ticket deleted successfully.' : (result.message || 'Failed to delete ticket.');
+      fetchTickets();
     } catch (error) {
       console.error(error);
       document.getElementById('status').textContent = 'Server error. Please try again.';
     }
   }
-  document.getElementById('searchInput').onchange
+
+  function showLoadingAndRedirect(url) {
+    if (loadingIndicator) loadingIndicator.style.display = 'block';
+    window.location.href = url;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
 
-    // Initial fetch
-    fetchTickets(searchInput.value, statusFilter.value);
+    // Initial fetch using URL param (if any)
+    const initialParams = new URLSearchParams(window.location.search);
+    const initialStatus = initialParams.get('status') || 'all';
+    const initialSearch = initialParams.get('search') || '';
+    searchInput.value = initialSearch;
+    fetchTickets(initialSearch, initialStatus);
 
-    // On search input
     searchInput.addEventListener('input', () => {
       fetchTickets(searchInput.value, statusFilter.value);
     });
 
-    // On status filter change
     statusFilter.addEventListener('change', () => {
       fetchTickets(searchInput.value, statusFilter.value);
     });
   });
-
-
 </script>
 
 <?php require_once __DIR__ . '/components/footer.php'; ?>
