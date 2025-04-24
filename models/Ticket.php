@@ -12,8 +12,7 @@ class Ticket {
         $this->db = $db;
         $this->logger = new Logger($db);
     }
-    public function create($requester_id, $requester, $subject, $priority, $topic, $description, $attachment, $attachmentType)
-    {
+    public function create($requester_id, $requester, $subject, $priority, $topic, $description, $attachment, $attachmentType){
         try {
             $query = "INSERT INTO {$this->table} 
                     (requester_id, requester, subject, priority, topic, description, attachment, attachment_type) 
@@ -157,8 +156,7 @@ class Ticket {
         }
     }
     
-    public function updateReply($id, $last_replier, $subject, $priority, $status, $topic, $description, $reply, $attachment = null, $attachmentType = null)
-    {
+    public function updateReply($id, $last_replier, $subject, $priority, $status, $topic, $description, $reply, $attachment = null, $attachmentType = null){
         try {
             $fields = [
                 'subject' => $subject,

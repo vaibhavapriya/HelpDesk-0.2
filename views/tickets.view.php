@@ -152,10 +152,18 @@ if (!isset($_SESSION['jwt_token']) || empty($_SESSION['jwt_token'])) {
         loadingIndicator.style.display = 'none';
       }
   }
-  function statusview(status){
-      document.getElementById('statusFilter').value = status;
-      fetchTickets("",status);
-  }
+  function statusview(status) {
+  const statusFilter = document.getElementById('statusFilter');
+  statusFilter.value = status;
+
+  // Trigger the change event explicitly after updating the value
+  const event = new Event('change');
+  statusFilter.dispatchEvent(event);
+
+  // Fetch tickets after updating the value
+  fetchTickets("", status);
+}
+
   async function deleteTicket(id) {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
