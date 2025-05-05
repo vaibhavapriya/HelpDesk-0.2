@@ -6,7 +6,9 @@
     },
     "autoload": {
     "psr-4": {
-        "app\\": "HelpDesk-0.2/"
+        "app\\controller\\": "controller/",
+        "app\\services\\": "services/",
+        "app\\models\\": "models/"
     }
 }
 }

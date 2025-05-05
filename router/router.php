@@ -1,16 +1,14 @@
 <?php
-require_once __DIR__ . '/../controller/HomeController.php'; 
-require_once __DIR__ . '/../controller/UserController.php'; 
-require_once __DIR__ . '/../controller/TicketController.php'; 
-require_once __DIR__ . '/../controller/AdminController.php';
-require_once __DIR__ . '/../controller/MailController.php';
 require_once __DIR__ . '/../config/Database.php';
-require_once __DIR__ . '/../services/AuthMiddleware.php';
-require_once __DIR__ . '/../services/AuthRole.php';
-require_once __DIR__ . '/../services/CheckTicket.php';
-require_once __DIR__ . '/../services/Logger.php';
-
-use app\services\Logger;
+// require_once __DIR__ . '/../controller/HomeController.php'; 
+// require_once __DIR__ . '/../controller/UserController.php'; 
+// require_once __DIR__ . '/../controller/TicketController.php'; 
+// require_once __DIR__ . '/../controller/AdminController.php';
+// require_once __DIR__ . '/../controller/MailController.php';
+// require_once __DIR__ . '/../services/AuthMiddleware.php';
+// require_once __DIR__ . '/../services/AuthRole.php';
+// require_once __DIR__ . '/../services/CheckTicket.php';
+//  require_once __DIR__ . '/../services/Logger.php';
 use app\controller\HomeController;
 use app\controller\UserController;
 use app\controller\TicketController;
@@ -19,7 +17,7 @@ use app\controller\MailController;
 use app\services\AuthMiddleware;
 use app\services\AuthRole;
 use app\services\CheckTicket;
-
+use app\services\Logger;
 class Router {
     private array $routes = [];
     private string $basePath = '';
